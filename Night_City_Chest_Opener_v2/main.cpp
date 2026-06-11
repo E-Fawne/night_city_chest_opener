@@ -18,7 +18,11 @@
 
 int main()
 {
-	std::cout << "Hello, welcome to the Night City Chest Opener.\nWhat do you want to do?\n1. Create a new weapon\n2. Browse save\n3. Quit\n";
+	std::cout << "Hello, welcome to the Night City Chest Opener.\nWhat is your name? ";
+	std::string username{};
+	std::cin >> username;
+
+	std::cout << "What do you want to do " << username << "?" << "\n1.Create a new weapon\n2.Browse save\n3.Quit\n";
 	int input{};
 	do
 	{
@@ -28,7 +32,7 @@ int main()
 
 	if (input == 2)
 	{
-		browseSaveFile();
+		browseSaveFile(username);
 	}
 
 	while (input == 1)
@@ -59,7 +63,7 @@ int main()
 				std::cin >> saveinput;
 
 				if (saveinput == 'y')
-					saveWeapon(firearm);
+					saveWeapon(firearm, username);
 			}
 
 			if (type >= WeaponCreationTools::Melee && type <= WeaponCreationTools::VH_Melee)
@@ -72,7 +76,7 @@ int main()
 				std::cin >> saveinput;
 
 				if (saveinput == 'y')
-					saveWeapon(melee);
+					saveWeapon(melee, username);
 			}
 
 			if (type >= WeaponCreationTools::Util_G && type <= WeaponCreationTools::Pers_G)
@@ -85,7 +89,7 @@ int main()
 				std::cin >> saveinput;
 
 				if (saveinput == 'y')
-					saveWeapon(grenade);
+					saveWeapon(grenade, username);
 			}
 		}
 

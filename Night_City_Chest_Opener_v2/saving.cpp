@@ -1,22 +1,62 @@
 #include <fstream>
+#include <string>
 #include "Utils.h"
 #include "Saving.h"
 #include <iostream>
 
-void saveWeapon(const Firearm& firearm)
+int getID(char type, std::string username)
 {
-	static int firearmid{};
-	++firearmid;
-
-	std::ofstream save{ "save.txt", std::ios::app };
+	std::string usernamecopy{ username };
+	std::string userfile{ usernamecopy.insert(username.size() , ".txt") };
+	std::fstream save{ userfile };
+	int ID{0};
 
 	if (!save)
 	{
-		std::cerr << "Save.txt could not be opened for writing.\n";
+		std::cerr << username << ".txt could not be opened.\n";
+		return -1;
+	}
+
+	while (true)
+	{
+		if (save.eof())
+			break;
+
+		if (!save)
+			break;
+
+		save.ignore(std::numeric_limits<std::streamsize>::max(), '#');
+
+		if (save.peek() == type)
+		{
+			save.ignore(1);
+			std::string str{};
+			std::getline(save, str);
+			
+			if (std::stoi(str) > ID)
+				ID = std::stoi(str);
+		}
+	}
+
+	return ID;
+}
+
+void saveWeapon(const Firearm& firearm, std::string username)
+{
+	std::string usernamecopy{ username };
+	std::string userfile{ usernamecopy.insert(username.size() , ".txt")};
+	std::ofstream save{ userfile, std::ios::app };
+
+	static int firearmID{getID('F', username)};
+	++firearmID;
+
+	if (!save)
+	{
+		std::cerr << username << ".txt could not be opened for writing.\n";
 		return;
 	}
 
-	save << "WeaponID: #F" << firearmid << '\n';
+	save << "WeaponID: #F" << firearmID << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(firearm.getRarity()) << " " << getTypeText(firearm.getType()) << '\n';
@@ -37,23 +77,25 @@ void saveWeapon(const Firearm& firearm)
 	save << "Concealable: " << (firearm.getConcealable() ? "Yes" : "No") << " (" << firearm.getConcealBonus() << ")" << '\n';
 	save << "Special: " << firearm.m_weaponSpecial << '\n' << firearm.m_brandSpecial << '\n' << firearm.m_malorianSpecial2 << "\n\n";
 
-	save << "Price: " << firearm.getPrice() << " Eurodollars" << "\n\n/";
+	save << "Price: " << firearm.getPrice() << " Eurodollars" << "\n\n;";
 }
 
-void saveWeapon(const MeleeWeapon& melee)
+void saveWeapon(const MeleeWeapon& melee, std::string username)
 {
-	static int meleeid{};
-	++meleeid;
+	std::string usernamecopy{ username };
+	std::string userfile{ usernamecopy.insert(username.size() , ".txt")};
+	std::ofstream save{ userfile, std::ios::app };
 
-	std::ofstream save{ "save.txt", std::ios::app };
+	static int meleeID{getID('M', username)};
+	++meleeID;
 
 	if (!save)
 	{
-		std::cerr << "Save.txt could not be opened for writing.\n";
+		std::cerr << username << ".txt could not be opened for writing.\n";
 		return;
 	}
 
-	save << "WeaponID: #M" << meleeid << '\n';
+	save << "WeaponID: #M" << meleeID << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(melee.getRarity()) << " " << getTypeText(melee.getType()) << '\n';
@@ -73,23 +115,25 @@ void saveWeapon(const MeleeWeapon& melee)
 	save << "Throwable: " << (melee.m_throwable ? "Yes" : "No") << '\n';
 	save << "Special: " << melee.m_brandSpecial << "\n\n";
 
-	save << "Price: " << melee.getPrice() << " Eurodollars" << "\n\n/";
+	save << "Price: " << melee.getPrice() << " Eurodollars" << "\n\n;";
 }
 
-void saveWeapon(const Grenade& grenade)
+void saveWeapon(const Grenade& grenade, std::string username)
 {
-	static int grenadeid{};
-	++grenadeid;
+	std::string usernamecopy{ username };
+	std::string userfile{ usernamecopy.insert(username.size(), ".txt")};
+	std::ofstream save{ userfile, std::ios::app };
 
-	std::ofstream save{ "save.txt", std::ios::app };
+	static int grenadeID{getID('G', username)};
+	++grenadeID;
 
 	if (!save)
 	{
-		std::cerr << "Save.txt could not be opened for writing.\n";
+		std::cerr << username << ".txt could not be opened for writing.\n";
 		return;
 	}
 
-	save << "WeaponID: #G" << grenadeid << '\n';
+	save << "WeaponID: #G" << grenadeID << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(grenade.getRarity()) << " " << getTypeText(grenade.getType()) << '\n';
@@ -104,25 +148,31 @@ void saveWeapon(const Grenade& grenade)
 	save << "Duration: " << grenade.m_duration << '\n';
 	save << "Special Bonus: " << grenade.getSpecialBonus() << '\n';
 
-	save << "\nPrice: " << grenade.getPrice() << " Eurodollars" << "\n\n/";
+	save << "\nPrice: " << grenade.getPrice() << " Eurodollars" << "\n\n;";
 }
 
-void browseSaveFile()
+void browseSaveFile(std::string username)
 {
 	std::cout << "Which type of weapon do you want to browse?\n1. Firearms\n2. Melee Weapons\n3. Grenades\n";
 	int input{};
 	std::cin >> input;
 
-	std::ifstream save{ "save.txt"};
+	std::string usernamecopy{ username };
+	std::string userfile(usernamecopy.insert(username.size(), ".txt"));
+	std::ifstream save{ userfile};
+
 	if (!save)
 	{
-		std::cerr << "Save.txt could not be opened for reading.\n";
+		std::cerr << username << ".txt could not be opened for reading.\n";
 		return;
 	}
 
 	while (true)
 	{
 		save.ignore(std::numeric_limits<std::streamsize>::max(), '#');
+		
+		if (save.eof())
+			save.seekg(0, std::ios::beg);
 
 		if (input == 1)
 		{
@@ -130,7 +180,7 @@ void browseSaveFile()
 			{
 				newlineSpam();
 				std::string str{};
-				std::getline(save, str, '/');
+				std::getline(save, str, ';');
 				std::cout << "WeaponID: " << str;
 
 				std::cout << "next ->(n) / quit x(q)\n";
@@ -150,7 +200,7 @@ void browseSaveFile()
 			{
 				newlineSpam();
 				std::string str{};
-				std::getline(save, str, '/');
+				std::getline(save, str, ';');
 				std::cout << "WeaponID: " << str;
 
 				std::cout << "next ->(n) / quit x(q)\n";
@@ -170,7 +220,7 @@ void browseSaveFile()
 			{
 				newlineSpam();
 				std::string str{};
-				std::getline(save, str, '/');
+				std::getline(save, str, ';');
 				std::cout << "WeaponID: " << str;
 
 				std::cout << "next ->(n) / quit x(q)\n";
