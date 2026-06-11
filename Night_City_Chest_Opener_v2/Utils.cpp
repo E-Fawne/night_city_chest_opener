@@ -473,7 +473,7 @@ void Firearm::setSpecialExtra()
 		switch (rand)
 		{
 		case 1: m_brandSpecial = "Ammo Mod:\nTracer: Every consecutive hit on the same target gives you a bonus (of 1) to hit rate on them"; break;
-		case 2: m_brandSpecial = "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury by 1"; break;
+		case 2: m_brandSpecial = "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury is reduced by 1"; break;
 		case 3: m_brandSpecial = "Ammo Mod:\nSubsonic: Your shots are harder to track"; break;
 		case 4: m_brandSpecial = "Ammo Mod:\nPiercing: Ignores half of armor (and cover)"; break;
 		case 5: m_brandSpecial = "Ammo Mod:\nFull Metal Jacket: Standard Malorian issued round"; break;
@@ -490,7 +490,7 @@ void Firearm::setSpecialExtra()
 		switch (rand2)
 		{
 		case 1: m_malorianSpecial2 = "Ammo Mod:\nTracer: Every consecutive hit on the same target gives you a bonus (of 1) to hit rate on them"; break;
-		case 2: m_malorianSpecial2 = "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury by 1"; break;
+		case 2: m_malorianSpecial2 = "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury is reduced by 1"; break;
 		case 3: m_malorianSpecial2 = "Ammo Mod:\nSubsonic: Your shots are harder to track"; break;
 		case 4: m_malorianSpecial2 = "Ammo Mod:\nPiercing: Ignores half of armor (and cover)"; break;
 		case 5: m_malorianSpecial2 = "Ammo Mod:\nFull Metal Jacket: Standard Malorian issued round"; break;
@@ -1225,5 +1225,13 @@ void Grenade::tweakStats()
 		{
 			continue;
 		}
+	}
+}
+
+void newlineSpam()
+{
+	for (int i{}; i < 25; ++i)
+	{
+		std::cout << '\n';
 	}
 }

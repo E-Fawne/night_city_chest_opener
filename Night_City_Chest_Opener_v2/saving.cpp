@@ -16,7 +16,7 @@ void saveWeapon(const Firearm& firearm)
 		return;
 	}
 
-	save << "WeaponID: F" << firearmid << '\n';
+	save << "WeaponID: #F" << firearmid << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(firearm.getRarity()) << " " << getTypeText(firearm.getType()) << '\n';
@@ -37,7 +37,7 @@ void saveWeapon(const Firearm& firearm)
 	save << "Concealable: " << (firearm.getConcealable() ? "Yes" : "No") << " (" << firearm.getConcealBonus() << ")" << '\n';
 	save << "Special: " << firearm.m_weaponSpecial << '\n' << firearm.m_brandSpecial << '\n' << firearm.m_malorianSpecial2 << "\n\n";
 
-	save << "Price: " << firearm.getPrice() << " Eurodollars" << "\n\n";
+	save << "Price: " << firearm.getPrice() << " Eurodollars" << "\n\n/";
 }
 
 void saveWeapon(const MeleeWeapon& melee)
@@ -53,7 +53,7 @@ void saveWeapon(const MeleeWeapon& melee)
 		return;
 	}
 
-	save << "WeaponID: M" << meleeid << '\n';
+	save << "WeaponID: #M" << meleeid << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(melee.getRarity()) << " " << getTypeText(melee.getType()) << '\n';
@@ -73,7 +73,7 @@ void saveWeapon(const MeleeWeapon& melee)
 	save << "Throwable: " << (melee.m_throwable ? "Yes" : "No") << '\n';
 	save << "Special: " << melee.m_brandSpecial << "\n\n";
 
-	save << "Price: " << melee.getPrice() << " Eurodollars" << "\n\n";
+	save << "Price: " << melee.getPrice() << " Eurodollars" << "\n\n/";
 }
 
 void saveWeapon(const Grenade& grenade)
@@ -89,7 +89,7 @@ void saveWeapon(const Grenade& grenade)
 		return;
 	}
 
-	save << "WeaponID: G" << grenadeid << '\n';
+	save << "WeaponID: #G" << grenadeid << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(grenade.getRarity()) << " " << getTypeText(grenade.getType()) << '\n';
@@ -104,6 +104,85 @@ void saveWeapon(const Grenade& grenade)
 	save << "Duration: " << grenade.m_duration << '\n';
 	save << "Special Bonus: " << grenade.getSpecialBonus() << '\n';
 
-	save << "\nPrice: " << grenade.getPrice() << " Eurodollars" << "\n\n";
+	save << "\nPrice: " << grenade.getPrice() << " Eurodollars" << "\n\n/";
 }
 
+void browseSaveFile()
+{
+	std::cout << "Which type of weapon do you want to browse?\n1. Firearms\n2. Melee Weapons\n3. Grenades\n";
+	int input{};
+	std::cin >> input;
+
+	std::ifstream save{ "save.txt"};
+	if (!save)
+	{
+		std::cerr << "Save.txt could not be opened for reading.\n";
+		return;
+	}
+
+	while (true)
+	{
+		save.ignore(std::numeric_limits<std::streamsize>::max(), '#');
+
+		if (input == 1)
+		{
+			if (save.peek() == 'F')
+			{
+				newlineSpam();
+				std::string str{};
+				std::getline(save, str, '/');
+				std::cout << "WeaponID: " << str;
+
+				std::cout << "next ->(n) / quit x(q)\n";
+				char browseInput{};
+				std::cin >> browseInput;
+
+				if (browseInput == 'n')
+					continue;
+
+				else if (browseInput == 'q')
+					break;
+			}
+		}
+		if (input == 2)
+		{
+			if (save.peek() == 'M')
+			{
+				newlineSpam();
+				std::string str{};
+				std::getline(save, str, '/');
+				std::cout << "WeaponID: " << str;
+
+				std::cout << "next ->(n) / quit x(q)\n";
+				char browseInput{};
+				std::cin >> browseInput;
+
+				if (browseInput == 'n')
+					continue;
+
+				else if (browseInput == 'q')
+					break;
+			}
+		}
+		if (input == 3)
+		{
+			if (save.peek() == 'G')
+			{
+				newlineSpam();
+				std::string str{};
+				std::getline(save, str, '/');
+				std::cout << "WeaponID: " << str;
+
+				std::cout << "next ->(n) / quit x(q)\n";
+				char browseInput{};
+				std::cin >> browseInput;
+
+				if (browseInput == 'n')
+					continue;
+
+				else if (browseInput == 'q')
+					break;
+			}
+		}
+	}
+}

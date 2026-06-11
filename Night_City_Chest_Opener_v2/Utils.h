@@ -147,6 +147,7 @@ public:
 	int getSpecialBonus() const { return m_specialBonus; }
 	std::string_view getPrefix() const { return m_prefix; }
 	virtual void failSafe();
+	void setPrefix(std::string_view prefix) { m_prefix = prefix; }
 
 	virtual void applyRarityBonus();
 	void generateFirearmPrefix();
@@ -243,6 +244,44 @@ public:
 		failSafe();
 	}
 
+	Firearm(const WeaponCreationTools::WeaponType& type, const WeaponCreationTools::Rarity& rarity, const Part& body, const Part& barrel, const Part& scope, const Part& grip, const Part& stock, std::string_view weaponSpecial,
+	std::string_view brandSpecial, std::string_view malorianSpecial2, std::string_view prefix)
+		: Weapon{type, rarity}
+		, m_body {body}
+		, m_barrel {barrel}
+		, m_scope {scope}
+		, m_grip {grip}
+		, m_weaponSpecial{ weaponSpecial }
+		, m_malorianSpecial2 {malorianSpecial2}
+	{
+		using namespace WeaponCreationTools;
+
+		if (getType() == H_SMG || getType() == SG || getType() == AR || getType() == SR || getType() == Bow || getType() == GL || getType() == RL)
+			m_stock = stock;
+
+		switch (getType())
+		{
+		case HG: generateHGBase(); break;
+		case H_HG: generateHHGBase(); break;
+		case VH_HG: generateVHHGBase(); break;
+		case SMG: generateSMGBase(); break;
+		case H_SMG: generateHSMGBase(); break;
+		case SG: generateSGBase(); break;
+		case AR: generateARBase(); break;
+		case SR: generateSRBase(); break;
+		case Bow: generateBowBase(); break;
+		case GL: generateGLBase(); break;
+		case RL: generateRLBase(); break;
+		default: std::cout << "Something went wrong"; break;
+		}
+
+		applyRarityBonus();
+		tweakStats();
+		setPrefix(prefix);
+
+		failSafe();
+	}
+
 	friend const std::ostream& operator<<(const std::ostream& out, const Firearm& firearm);
 
 	void applyRarityBonus();
@@ -333,6 +372,32 @@ public:
 
 	}
 
+	MeleeWeapon(const WeaponCreationTools::WeaponType& type, const WeaponCreationTools::Rarity& rarity, const Part& material, const Part& body, const Part& grip, std::string_view brandSpecial,
+		std::string_view prefix)
+		: Weapon{ type, rarity }
+		, m_material {material}
+		, m_body {body}
+		, m_grip {grip}
+		, m_brandSpecial {brandSpecial}
+	{
+		using namespace WeaponCreationTools;
+
+		switch (getType())
+		{
+		case Melee: generateMeleeBase(); break;
+		case I_Melee: generateIMeleeBase(); break;
+		case H_Melee: generateHMeleeBase(); break;
+		case VH_Melee: generateVHMeleeBase(); break;
+		default: std::cout << "Something went wrong"; break;
+		}
+
+		applyRarityBonus();
+		tweakStats();
+
+		setPrefix(prefix);
+		failSafe();
+	}
+
 	void applyRarityBonus();
 	void setBrandSpecial();
 	void setSpecialExtra();
@@ -411,6 +476,29 @@ public:
 		failSafe();
 	}
 
+	Grenade(const WeaponCreationTools::WeaponType& type, const WeaponCreationTools::Rarity& rarity, const Part& reagent, const Part& body, const Part& fuse, std::string_view grenadeSpecifics)
+		: Weapon{ type, rarity }
+		, m_reagent {reagent}
+		, m_body {body}
+		, m_fuse {fuse}
+		, m_grenadeSpecifics {grenadeSpecifics}
+	{
+		using namespace WeaponCreationTools;
+
+		switch (getType())
+		{
+		case Explo_G: generateExploGrenadeBase(); break;
+		case Util_G: generateUtilGrenadeBase(); break;
+		case Pers_G: generatePersGrenadeBase(); break;
+		default: std::cout << "Something went wrong"; break;
+		}
+
+		applyRarityBonus();
+		tweakStats();
+
+		failSafe();
+	}
+
 	void applyRarityBonus();
 	void tweakStats();
 
@@ -453,5 +541,7 @@ public:
 	friend const std::ostream& operator<<(const std::ostream& out, const Grenade& grenade);
 	friend void saveWeapon(const Grenade& grenade);
 };
+
+void newlineSpam();
 
 #endif

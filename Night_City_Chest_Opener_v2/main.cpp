@@ -14,24 +14,22 @@
 #include <array>
 #include "Random.h"
 #include "Utils.h"
-
-void newlineSpam()
-{
-	for (int i{}; i < 25; ++i)
-	{
-		std::cout << '\n';
-	}
-}
+#include "Saving.h"
 
 int main()
 {
-	std::cout << "Hello, welcome to the Night City Chest Opener.\nWould you like to generate a weapon?\n1. Yes 2. No\n";
+	std::cout << "Hello, welcome to the Night City Chest Opener.\nWhat do you want to do?\n1. Create a new weapon\n2. Browse save\n3. Quit\n";
 	int input{};
 	do
 	{
 		std::cin >> input;
 	} 
-	while (input != 1 && input != 2);
+	while (input < 1 && input > 3);
+
+	if (input == 2)
+	{
+		browseSaveFile();
+	}
 
 	while (input == 1)
 	{
@@ -55,9 +53,11 @@ int main()
 			{
 				Firearm firearm{ type, rarity };
 				std::cout << firearm;
+
 				std::cout << "Would you like to save this weapon(y/n)? ";
 				char saveinput{};
 				std::cin >> saveinput;
+
 				if (saveinput == 'y')
 					saveWeapon(firearm);
 			}
@@ -66,9 +66,11 @@ int main()
 			{
 				MeleeWeapon melee{ type, rarity };
 				std::cout << melee;
+
 				std::cout << "Would you like to save this weapon(y/n)? ";
 				char saveinput{};
 				std::cin >> saveinput;
+
 				if (saveinput == 'y')
 					saveWeapon(melee);
 			}
@@ -77,9 +79,11 @@ int main()
 			{
 				Grenade grenade{ type, rarity };
 				std::cout << grenade;
+
 				std::cout << "Would you like to save this weapon(y/n)? ";
 				char saveinput{};
 				std::cin >> saveinput;
+
 				if (saveinput == 'y')
 					saveWeapon(grenade);
 			}
