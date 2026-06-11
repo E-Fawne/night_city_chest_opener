@@ -55,18 +55,33 @@ int main()
 			{
 				Firearm firearm{ type, rarity };
 				std::cout << firearm;
+				std::cout << "Would you like to save this weapon(y/n)? ";
+				char saveinput{};
+				std::cin >> saveinput;
+				if (saveinput == 'y')
+					saveWeapon(firearm);
 			}
 
 			if (type >= WeaponCreationTools::Melee && type <= WeaponCreationTools::VH_Melee)
 			{
 				MeleeWeapon melee{ type, rarity };
 				std::cout << melee;
+				std::cout << "Would you like to save this weapon(y/n)? ";
+				char saveinput{};
+				std::cin >> saveinput;
+				if (saveinput == 'y')
+					saveWeapon(melee);
 			}
 
 			if (type >= WeaponCreationTools::Util_G && type <= WeaponCreationTools::Pers_G)
 			{
 				Grenade grenade{ type, rarity };
 				std::cout << grenade;
+				std::cout << "Would you like to save this weapon(y/n)? ";
+				char saveinput{};
+				std::cin >> saveinput;
+				if (saveinput == 'y')
+					saveWeapon(grenade);
 			}
 		}
 

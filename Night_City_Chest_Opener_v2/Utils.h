@@ -289,6 +289,7 @@ public:
 	void generateRLBase();
 
 	void failSafe();
+	friend void saveWeapon(const Firearm& weapon);
 };
 
 class MeleeWeapon : public Weapon
@@ -369,6 +370,7 @@ public:
 
 	friend const std::ostream& operator<<(const std::ostream& out, const MeleeWeapon& melee);
 	void failSafe();
+	friend void saveWeapon(const MeleeWeapon& melee);
 };
 
 class Grenade : public Weapon
@@ -449,6 +451,7 @@ public:
 	void failSafe();
 
 	friend const std::ostream& operator<<(const std::ostream& out, const Grenade& grenade);
+	friend void saveWeapon(const Grenade& grenade);
 };
 
 #endif
