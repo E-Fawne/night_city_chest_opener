@@ -172,7 +172,17 @@ void browseSaveFile(std::string username)
 		save.ignore(std::numeric_limits<std::streamsize>::max(), '#');
 		
 		if (save.eof())
-			save.seekg(0, std::ios::beg);
+		{
+			std::cout << "You have seen all of your weapons. Would you like to go again?(y/n) ";
+			char again{};
+			std::cin >> again;
+
+			if (again == 'y')
+				save.seekg(0, std::ios::beg);
+
+			else
+				break;
+		}
 
 		if (input == 1)
 		{
