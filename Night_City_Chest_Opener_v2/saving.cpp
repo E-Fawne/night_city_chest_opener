@@ -53,7 +53,7 @@ void deleteWeapon(std::string username, std::string deletionID)
 		{
 			line.erase();
 			file.ignore(std::numeric_limits<std::streamsize>::max(), ';');
-			line = ";" + line;
+			temp << ';';
 		}
 
 		temp << line << std::endl;
