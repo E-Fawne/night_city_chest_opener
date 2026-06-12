@@ -3,12 +3,11 @@
 #include "Utils.h"
 #include "Saving.h"
 #include <iostream>
+#include <filesystem>
 
 int getID(char type, std::string username)
 {
-	std::string usernamecopy{ username };
-	std::string userfile{ usernamecopy.insert(username.size() , ".txt") };
-	std::fstream save{ userfile };
+	std::fstream save{ username + ".txt"};
 	int ID{0};
 
 	if (!save)
@@ -41,11 +40,38 @@ int getID(char type, std::string username)
 	return ID;
 }
 
+void deleteWeapon(std::string username, std::string deletionID)
+{
+	std::fstream file{ username + ".txt" };
+	std::ofstream temp{ "temp.txt" };
+
+	std::string line{};
+	std::string altDeletionID{";" + deletionID};
+	while (std::getline(file, line))
+	{
+		if (line == deletionID || line == altDeletionID)
+		{
+			line.erase();
+			file.ignore(std::numeric_limits<std::streamsize>::max(), ';');
+		}
+
+		temp << line << std::endl;
+	}
+
+	temp.close();
+	file.close();
+
+	std::string userfile{ username + ".txt" };
+	std::filesystem::rename("temp.txt", userfile.c_str());
+
+	std::cout << "Deletion complete. Returning to menu.\n";
+	file.open(userfile.c_str());
+	file.seekg(0, std::ios::beg);
+}
+
 void saveWeapon(const Firearm& firearm, std::string username)
 {
-	std::string usernamecopy{ username };
-	std::string userfile{ usernamecopy.insert(username.size() , ".txt")};
-	std::ofstream save{ userfile, std::ios::app };
+	std::ofstream save{ username + ".txt", std::ios::app};
 
 	static int firearmID{getID('F', username)};
 	++firearmID;
@@ -82,9 +108,7 @@ void saveWeapon(const Firearm& firearm, std::string username)
 
 void saveWeapon(const MeleeWeapon& melee, std::string username)
 {
-	std::string usernamecopy{ username };
-	std::string userfile{ usernamecopy.insert(username.size() , ".txt")};
-	std::ofstream save{ userfile, std::ios::app };
+	std::ofstream save{ username + ".txt", std::ios::app};
 
 	static int meleeID{getID('M', username)};
 	++meleeID;
@@ -120,9 +144,7 @@ void saveWeapon(const MeleeWeapon& melee, std::string username)
 
 void saveWeapon(const Grenade& grenade, std::string username)
 {
-	std::string usernamecopy{ username };
-	std::string userfile{ usernamecopy.insert(username.size(), ".txt")};
-	std::ofstream save{ userfile, std::ios::app };
+	std::ofstream save{ username + ".txt", std::ios::app};
 
 	static int grenadeID{getID('G', username)};
 	++grenadeID;
@@ -157,9 +179,7 @@ void browseSaveFile(std::string username)
 	int input{};
 	std::cin >> input;
 
-	std::string usernamecopy{ username };
-	std::string userfile(usernamecopy.insert(username.size(), ".txt"));
-	std::ifstream save{ userfile};
+	std::ifstream save{ username + ".txt"};
 
 	if (!save)
 	{
@@ -170,7 +190,7 @@ void browseSaveFile(std::string username)
 	while (true)
 	{
 		save.ignore(std::numeric_limits<std::streamsize>::max(), '#');
-		
+
 		if (save.eof())
 		{
 			std::cout << "You have seen all of your weapons. Would you like to go again?(y/n) ";
@@ -190,15 +210,29 @@ void browseSaveFile(std::string username)
 			{
 				newlineSpam();
 				std::string str{};
-				std::getline(save, str, ';');
-				std::cout << "WeaponID: " << str;
 
-				std::cout << "next ->(n) / quit x(q)\n";
+				std::string weaponID{};
+				std::getline(save, weaponID);
+
+				std::getline(save, str, ';');
+				std::cout << "WeaponID: " << weaponID << '\n' << str;
+
+				weaponID = "WeaponID: #" + weaponID;
+
+				std::cout << "next ->(n) / quit x(q) / delete(d)\n";
 				char browseInput{};
 				std::cin >> browseInput;
 
 				if (browseInput == 'n')
 					continue;
+
+				else if (browseInput == 'd')
+				{
+					save.close();
+					deleteWeapon(username, weaponID);
+					browseSaveFile(username);
+					break;
+				}
 
 				else if (browseInput == 'q')
 					break;
@@ -210,15 +244,29 @@ void browseSaveFile(std::string username)
 			{
 				newlineSpam();
 				std::string str{};
-				std::getline(save, str, ';');
-				std::cout << "WeaponID: " << str;
 
-				std::cout << "next ->(n) / quit x(q)\n";
+				std::string weaponID{};
+				std::getline(save, weaponID);
+
+				std::getline(save, str, ';');
+				std::cout << "WeaponID: " << weaponID << '\n' << str;
+
+				weaponID = "WeaponID: #" + weaponID;
+
+				std::cout << "next ->(n) / quit x(q) / delete(d)\n";
 				char browseInput{};
 				std::cin >> browseInput;
 
 				if (browseInput == 'n')
 					continue;
+
+				else if (browseInput == 'd')
+				{
+					save.close();
+					deleteWeapon(username, weaponID);
+					browseSaveFile(username);
+					break;
+				}
 
 				else if (browseInput == 'q')
 					break;
@@ -230,15 +278,29 @@ void browseSaveFile(std::string username)
 			{
 				newlineSpam();
 				std::string str{};
-				std::getline(save, str, ';');
-				std::cout << "WeaponID: " << str;
 
-				std::cout << "next ->(n) / quit x(q)\n";
+				std::string weaponID{};
+				std::getline(save, weaponID);
+
+				std::getline(save, str, ';');
+				std::cout << "WeaponID: " << weaponID << '\n' << str;
+
+				weaponID = "WeaponID: #" + weaponID;
+
+				std::cout << "next ->(n) / quit x(q) / delete(d)\n";
 				char browseInput{};
 				std::cin >> browseInput;
 
 				if (browseInput == 'n')
 					continue;
+
+				else if (browseInput == 'd')
+				{
+					save.close();
+					deleteWeapon(username, weaponID);
+					browseSaveFile(username);
+					break;
+				}
 
 				else if (browseInput == 'q')
 					break;
