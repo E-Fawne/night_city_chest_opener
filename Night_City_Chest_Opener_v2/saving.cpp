@@ -91,6 +91,195 @@ int prefixToNum(std::string_view prefix)
 		return -1;
 }
 
+std::string_view numToPrefix(std::string prefixNum)
+{
+	int prefix{ std::stoi(prefixNum)};
+	
+	switch (prefix)
+	{
+	case 0:		return "";
+	case 1:		return "Accurate: Aimed shot with advantage";
+	case 2:		return "Stable: Auto shot with advantage";
+	case 3:		return "High caliber: One advantage die on damage";
+	case 4:		return "Wieldy: Accuracy bonus";
+	case 5:		return "Fast: Fire rate bonus";
+	case 6:		return "Unstoppable: Shoots through cover";
+	case 7:		return "Penetrating: Doubles damage on armor";
+	case 8:		return "Accurate: Aimed hit with advantage";
+	case 9:		return "Stable: Throw with advantage";
+	case 10:	return "Sharp: One advantage die on damage";
+	case 11:	return "Wieldy: Handling bonus";
+	case 12:	return "Fast: Attack speed bonus";
+	case 13:	return "Handmade: Doubles the bonus on any parts that share the same brand as the weapon";
+	case 14:	return "Penetrating: Ignores armor";
+	default:	return "ERROR numToPrefix()";
+	}
+}
+
+std::string firearmBrandSpecialToText(std::string brandSpecial)
+{
+	if (brandSpecial == "MIL")
+		return "Quickswap";
+
+	else if (brandSpecial == "ARA")
+		return "Smart Bullets";
+
+	else if (brandSpecial == "GMI")
+		return "Self-Destruct";
+
+	else if (brandSpecial == "TSU")
+		return "Interface Spotter";
+
+	else if (brandSpecial == "NOV")
+		return "Horsepower";
+
+	else if (brandSpecial == "DAI")
+		return "Hit it";
+
+	else if (brandSpecial == "CON")
+		return "Safety Off";
+
+	else if (brandSpecial == "TRU")
+		return "Burst Fire";
+
+	else if (brandSpecial == "SAN")
+		return "Stylish";
+
+	else if (brandSpecial == "ROS")
+		return "E-Z-Swap";
+
+	else if (brandSpecial.substr(0, 3) == "HSD")
+		return firearmHSDMALexcept(brandSpecial);
+
+	else if (brandSpecial.substr(0, 3) == "MAL")
+		return firearmHSDMALexcept(brandSpecial);
+
+	else
+		return "Error firearmBrandSpecialToText()";
+}
+
+std::string firearmHSDMALexcept(std::string brandSpecial)
+{
+	if (brandSpecial == "MAL01")
+		return "Ammo Mod:\nTracer: Every consecutive hit on the same target gives you a bonus (of 1) to hit rate on them";
+
+	else if (brandSpecial == "MAL02")
+		return "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury is reduced by 1";
+
+	else if (brandSpecial == "MAL03")
+		return "Ammo Mod:\nSubsonic: Your shots are harder to track";
+
+	else if (brandSpecial == "MAL04")
+		return "Ammo Mod:\nPiercing: Ignores half of armor (and cover)";
+
+	else if (brandSpecial == "MAL05")
+		return "Ammo Mod:\nFull Metal Jacket: Standard Malorian issued round";
+
+	else if (brandSpecial == "MAL06")
+		return "Ammo Mod:\nHigh Velocity: Multiplies the effective distances of the round by 2";
+
+	else if (brandSpecial == "MAL07")
+		return "Ammo Mod:\nBuckshot: Acts like the standard shotgun Buckshot";
+
+	else if (brandSpecial == "MAL08")
+		return "Ammo Mod:\nRubber: Non-lethal, same damage";
+
+	else if (brandSpecial == "HSD1")
+		return "Chem Warfare:\nEMP: Adds an extra EMP explosion which deactivate any electrical system touched by the bullet";
+
+	else if (brandSpecial == "HSD2")
+		return "Chem Warfare:\nAcid: Adds an extra damage on time effect to the round, equal to setting the target on fire (but doubled on metal)";
+
+	else if (brandSpecial == "HSD3")
+		return "Chem Warfare:\nNeurotoxin: Any damage inflicted by this weapon is, instead, removed from maximum health total (Only an expensive operation can fix that)";
+
+	else if (brandSpecial == "HSD4")
+		return "Chem Warfare:\nNapalm: Sets the target on fire";
+
+	else if (brandSpecial == "HSD5")
+		return "Chem Warfare:\nSleeping gas: The target has to resist torture/drugs (DV defined by the quality of the weapon) in order to not fall asleep";
+
+	else if (brandSpecial == "HSD6")
+		return "Chem Warfare:\nNanomachines: Nanomachines that can be reprogrammed to do simple tasks on electrical components";
+
+	else if (brandSpecial == "HSD7")
+		return "Chem Warfare:\nSticky: Extremely sticky solution that disturbs movement";
+
+	else if (brandSpecial == "HSD8")
+		return "Chem Warfare:\nNeuropsychotic: Any damage inflicted is replicated on Humanity";
+
+	else
+		return "Error firearmHSDMALexcept()";
+}
+
+std::string MALexcept2(std::string brandSpecial)
+{
+	if (brandSpecial == "01")
+		return "Ammo Mod:\nTracer: Every consecutive hit on the same target gives you a bonus (of 1) to hit rate on them";
+
+	else if (brandSpecial == "02")
+		return "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury is reduced by 1";
+
+	else if (brandSpecial == "03")
+		return "Ammo Mod:\nSubsonic: Your shots are harder to track";
+
+	else if (brandSpecial == "04")
+		return "Ammo Mod:\nPiercing: Ignores half of armor (and cover)";
+
+	else if (brandSpecial == "05")
+		return "Ammo Mod:\nFull Metal Jacket: Standard Malorian issued round";
+
+	else if (brandSpecial == "06")
+		return "Ammo Mod:\nHigh Velocity: Multiplies the effective distances of the round by 2";
+
+	else if (brandSpecial == "07")
+		return "Ammo Mod:\nBuckshot: Acts like the standard shotgun Buckshot";
+
+	else if (brandSpecial == "08")
+		return "Ammo Mod:\nRubber: Non-lethal, same damage";
+
+	else
+		return "Error MALexcept2()";
+}
+
+Firearm readFirearmSerialNumber(std::string serialNumber)
+{
+	// #TYPE_ID - TYPE - RARITY - BODY - BARREL - GRIP - SCOPE - STOCK - PREFIX - BRAND_SPECIAL
+	using namespace WeaponCreationTools;
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	WeaponType type{ static_cast<WeaponType>(std::stoi(serialNumber.substr(0, serialNumber.find('-'))))};
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Rarity rarity{ static_cast<Rarity>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part body{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part barrel{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part grip{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part scope{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part stock{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('P') + 1);
+	std::string prefix{ numToPrefix(serialNumber.substr(0, serialNumber.find('-') + 1)) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	std::string brandSpecial{ firearmBrandSpecialToText(serialNumber.substr(0, serialNumber.find('-'))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	std::string malorianSpecial2{ MALexcept2(serialNumber) };
+
+	return Firearm{ type, rarity, body, barrel, scope, grip, stock, prefix, brandSpecial, malorianSpecial2 };
+}
+
 std::string brandSpecialToString(const Firearm& firearm)
 {
 	std::string brandSpecial{};
@@ -650,6 +839,15 @@ void saveWeapon(const Grenade& grenade, std::string username)
 	save << "\nPrice: " << grenade.getPrice() << " Eurodollars" << "\n\n;";
 }
 
+void modifyWeapon(std::string username, std::string weaponID)
+{
+	std::ifstream save{ username + ".txt" };
+
+	Firearm firearm{ readFirearmSerialNumber(weaponID) };
+
+	std::cout << firearm;
+}
+
 void browseSaveFile(std::string username)
 {
 	std::cout << "Which type of weapon do you want to browse?\n1. Firearms\n2. Melee Weapons\n3. Grenades\n";
@@ -696,12 +894,18 @@ void browseSaveFile(std::string username)
 
 				weaponID = "WeaponID: #" + weaponID;
 
-				std::cout << "next ->(n) / quit x(q) / delete(d)\n";
+				std::cout << "next ->(n) / modify (m) / delete (d) / quit x(q)\n";
 				char browseInput{};
 				std::cin >> browseInput;
 
 				if (browseInput == 'n')
 					continue;
+
+				else if (browseInput == 'm')
+				{
+					modifyWeapon(username, weaponID);
+					std::cin;
+				}
 
 				else if (browseInput == 'd')
 				{

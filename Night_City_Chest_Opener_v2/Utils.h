@@ -244,14 +244,14 @@ public:
 		failSafe();
 	}
 
-	Firearm(const WeaponCreationTools::WeaponType& type, const WeaponCreationTools::Rarity& rarity, const Part& body, const Part& barrel, const Part& scope, const Part& grip, const Part& stock, std::string_view weaponSpecial,
-	std::string_view brandSpecial, std::string_view malorianSpecial2, std::string_view prefix)
+	Firearm(const WeaponCreationTools::WeaponType& type, const WeaponCreationTools::Rarity& rarity, const Part& body, const Part& barrel, const Part& scope, const Part& grip, const Part& stock, std::string_view prefix,
+	std::string_view brandSpecial, std::string_view malorianSpecial2)
 		: Weapon{type, rarity}
 		, m_body {body}
 		, m_barrel {barrel}
 		, m_scope {scope}
 		, m_grip {grip}
-		, m_weaponSpecial{ weaponSpecial }
+		, m_brandSpecial{ brandSpecial }
 		, m_malorianSpecial2 {malorianSpecial2}
 	{
 		using namespace WeaponCreationTools;
@@ -277,6 +277,8 @@ public:
 
 		applyRarityBonus();
 		tweakStats();
+
+		setWeaponSpecial();
 		setPrefix(prefix);
 
 		failSafe();
