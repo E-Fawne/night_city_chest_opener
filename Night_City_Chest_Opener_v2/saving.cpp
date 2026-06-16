@@ -239,7 +239,227 @@ std::string MALexcept2(std::string brandSpecial)
 		return "Ammo Mod:\nRubber: Non-lethal, same damage";
 
 	else
-		return "Error MALexcept2()";
+		return "";
+}
+
+std::string meleeArasakaSpecialToText(std::string brandSpecial)
+{
+	if (brandSpecial == "ARA1")
+		return "Iai:\nVersatile: While fighting, +2 to any throw if the weapon was unsheathed this turn";
+
+	else if (brandSpecial == "ARA2")
+		return "Iai:\nTrue Slice: The next attack after unsheathing gets an extra damage die";
+
+	else if (brandSpecial == "ARA3")
+		return "Iai:\nFast Strike: You get a free attack after unsheathing";
+
+	else if (brandSpecial == "ARA4")
+		return "Iai:\nCharge: The turn you unsheath, you can Charge, which allows you to move an extra time and attack";
+
+	else if (brandSpecial == "ARA5")
+		return "Iai:\nTranquil Strike : The next attack after unsheathing cannot miss";
+
+	else if (brandSpecial == "ARA6")
+		return "Iai:\nTerror: Unsheathing triggers a Staredown event within which you may not receive any negative effects";
+
+	else if (brandSpecial == "ARA7")
+		return "Iai:\nReaction: You may unsheath this weapon as a response to any attack and parry it (this action takes your turn)";
+
+	else if (brandSpecial == "ARA8")
+		return "Iai:\nAccurate Slice: The penalty on any aimed attack following the unsheathing is nullified";
+
+	else
+		return "Error meleeArasakaSpecialToText()";
+}
+
+std::string meleeBrandSpecialToText(std::string brandSpecial)
+{
+	if (brandSpecial == "MIL")
+		return "Feint";
+
+	else if (brandSpecial == "KEN")
+		return "Armor Shred";
+
+	else if (brandSpecial == "EVW")
+		return "Tool";
+
+	else if (brandSpecial == "SAN")
+		return "Stylish";
+
+	else if (brandSpecial == "SDI")
+		return "Natural";
+
+	else if (brandSpecial.substr(0,3) == "ARA")
+		return meleeArasakaSpecialToText(brandSpecial);
+
+	else
+		return "Error meleeBrandSpecialToText()";
+}
+
+std::string grenadeSpecificsToText(std::string grenadeSpecifics)
+{
+	if (grenadeSpecifics.substr(0, 3) == "GMI")
+	{
+		if (grenadeSpecifics.substr(0, 6) == "GMI&UG")
+		{
+			if (grenadeSpecifics == "GMI&UG01")
+				return "Firesmoke\nGenerates a thin smoke that irritates the throat";
+
+			else if (grenadeSpecifics == "GMI&UG02")
+				return "Noise Machine\nGenerates a constant noise that distacts foes out of combat";
+
+			else if (grenadeSpecifics == "GMI&UG03")
+				return "Stinky Bomb\nCreates a foul odor that can make people throw up";
+		}
+		else if (grenadeSpecifics.substr(0, 6) == "GMI&EG")
+		{
+			if (grenadeSpecifics == "GMI&EG01")
+				return "Pipebomb\nClassic grenade, if not low quality";
+
+			else if (grenadeSpecifics == "GMI&EG02")
+				return "Unstable\nExplodes into light shrapnel, allowing you to ignore half of armor";
+
+			else if (grenadeSpecifics == "GMI&EG03")
+				return "Super Sensitive Mine\nExplodes on light contact or perturbation";
+		}
+	}
+
+	else if (grenadeSpecifics.substr(0, 3) == "CTE")
+	{
+		if (grenadeSpecifics.substr(0, 6) == "CTE&UG")
+		{
+			if (grenadeSpecifics == "CTE&UG01")
+				return "EMP\nTemporarily disables any electronics";
+
+			else if (grenadeSpecifics == "CTE&UG02")
+				return "Ear Disabler\nGenerates a loud high pitched noise that temporarily reduces or disables hearing";
+
+			else if (grenadeSpecifics == "CTE&UG03")
+				return "Deflector\nCreates a magnetic field that temporarily pushes back any metallic objets, making you harder to hit";
+		}
+
+		else if (grenadeSpecifics.substr(0, 6) == "CTE&PG")
+		{
+			if (grenadeSpecifics == "CTE&PG01")
+				return "Pulse EMP\nPulses an EMP field each turn, disabling electronics for this turn";
+
+			else if (grenadeSpecifics == "CTE&PG02")
+				return "Incendiary\nStandard incendiary grenade";
+
+			else if (grenadeSpecifics == "CTE&PG03")
+				return "Pulse Ear Disabler\nLiberates a high pitched loud noise every turn, disabling hearing";
+		}
+	}
+
+	else if (grenadeSpecifics.substr(0, 3) == "HSD")
+	{
+		if (grenadeSpecifics.substr(0, 6) == "HSD&UG")
+		{
+			if (grenadeSpecifics == "HSD&UG01")
+				return "Sleeping Gas\nConstantly exhales a sleeping agent that forces any foe to fall unconscious";
+
+			else if (grenadeSpecifics == "HSD&UG02")
+				return "Slippery Solution\nExplodes into a slippery liquid that makes every action more difficult";
+
+			else if (grenadeSpecifics == "HSD&UG03")
+				return "Sticky Bomb\nExplodes into a pool of quick hardening material that acts like cement once hardened";
+		}
+
+		else if (grenadeSpecifics.substr(0, 6) == "HSD&PG")
+		{
+			if (grenadeSpecifics == "HSD&PG01")
+				return "Acid Spray\nSprays acid each turn, coating anyone with it, damage is doubled on metal";
+
+			else if (grenadeSpecifics == "HSD&PG02")
+				return "Electric Field\nGenerates a constant electric field, damage is doubled on electronics";
+
+			else if (grenadeSpecifics == "HSD&PG03")
+				return "Irradiated Gas\nCreates a thick radioactive smoke that quickly deteriorates any living thing";
+		}
+	}
+	
+	else if (grenadeSpecifics.substr(0, 3) == "KTC")
+	{
+		if (grenadeSpecifics.substr(0, 6) == "KTC&UG")
+		{
+			if (grenadeSpecifics == "KTC&UG01")
+				return "Flashbang\nExplodes into a ball of bright light that temporarily blinds foes";
+
+			else if (grenadeSpecifics == "KTC&UG02")
+				return "Push Field\nCreates a harsh force field that pushes anything in its path";
+
+			else if (grenadeSpecifics == "KTC&UG03")
+				return "Electronics Resetter\nSends an electric signal forcing any electronics to fully restart";
+		}
+
+		else if (grenadeSpecifics.substr(0, 6) == "KTC&EG")
+		{
+			if (grenadeSpecifics == "KTC&EG01")
+				return "Explosive Charge\nRemotely activated charge";
+
+			else if (grenadeSpecifics == "KTC&EG02")
+				return "Thermite Bomb\nExplodes and frees thermite anyone caught in the blast, setting them on fire";
+
+			else if (grenadeSpecifics == "KTC&EG03")
+				return "Surface Grenade\nDamages foes on a surface level, allowing the environment to be unharmed";
+		}
+	}
+
+	else if (grenadeSpecifics.substr(0, 3) == "MIL")
+	{
+		if (grenadeSpecifics.substr(0, 6) == "MIL&UG")
+		{
+			if (grenadeSpecifics == "MIL&UG01")
+				return "Smoke\nGenerates a thick wall of smoke";
+
+			else if (grenadeSpecifics == "MIL&UG02")
+				return "Nerve Agent\nGradually damages the humanity of anyone inside the radius";
+
+			else if (grenadeSpecifics == "MIL&UG03")
+				return "Ping Grenade\nStealth grenade that quietly detonates and gives you a full view of its radius";
+		}
+
+		else if (grenadeSpecifics.substr(0, 6) == "MIL&EG")
+		{
+			if (grenadeSpecifics == "MIL&EG01")
+				return "Frag Grenade\nStandard issued Militech grenade";
+
+			else if (grenadeSpecifics == "MIL&EG02")
+				return "Claymore\nDetects any foe in a direct line and explodes in the same radius";
+
+			else if (grenadeSpecifics == "MIL&EG03")
+				return "Heat Seeking Grenade\nThis grenades autocorrects its trajectory towards the closest heat source";
+		}
+	}
+
+	else if (grenadeSpecifics.substr(0, 3) == "GLC")
+	{
+		if (grenadeSpecifics.substr(0, 6) == "GLC&EG")
+		{
+			if (grenadeSpecifics == "GLC&EG01")
+				return "Shrapnel\nExplodes into rasor sharp sharpnel, allowing you to ignore any and all armor";
+
+			else if (grenadeSpecifics == "GLC&EG02")
+				return "Spike Wall\nGrows spikes in its radius";
+
+			else if (grenadeSpecifics == "GLC&EG03")
+				return "Targetted Wounder\nHas a higher chance of causing a chosen wound";
+		}
+
+		else if (grenadeSpecifics.substr(0, 6) == "GLC&PG")
+		{
+			if (grenadeSpecifics == "GLC&PG01")
+				return "Spikes\nFrees spikes on the ground, damaging anyone stepping in the area";
+
+			else if (grenadeSpecifics == "GLC&PG02")
+				return "Senbon\nSends flying projectile each turn, wounding anyone in the area";
+
+			else if (grenadeSpecifics == "GLC&PG03")
+				return "Rasor Wire\nCreates long lines of rasor wire that attaches to anything, wounding on movement";
+		}
+	}
+
+	return "Error grenadeSpecificsToText()";
 }
 
 Firearm readFirearmSerialNumber(std::string serialNumber)
@@ -278,6 +498,61 @@ Firearm readFirearmSerialNumber(std::string serialNumber)
 	std::string malorianSpecial2{ MALexcept2(serialNumber) };
 
 	return Firearm{ type, rarity, body, barrel, scope, grip, stock, prefix, brandSpecial, malorianSpecial2 };
+}
+
+MeleeWeapon readMeleeSerialNumber(std::string serialNumber)
+{
+	// TYPE_ID - TYPE - RARITY - MATERIAL - GRIP - BODY - PREFIX - BRAND_SPECIAL
+	using namespace WeaponCreationTools;
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	WeaponType type{ static_cast<WeaponType>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Rarity rarity{ static_cast<Rarity>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part material{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part grip{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part body{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('P') + 1);
+	std::string prefix{ numToPrefix(serialNumber.substr(0, serialNumber.find('-') + 1)) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	std::string brandSpecial{ meleeBrandSpecialToText(serialNumber) };
+
+	return MeleeWeapon{ type, rarity, material, grip, body, prefix, brandSpecial };
+}
+
+Grenade readGrenadeSerialNumber(std::string serialNumber)
+{
+	// TYPE_ID - TYPE - RARITY - REAGENT - BODY - FUSE - SPECIFICS
+	using namespace WeaponCreationTools;
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	WeaponType type{ static_cast<WeaponType>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Rarity rarity{ static_cast<Rarity>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part reagent{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part body{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	Part fuse{ static_cast<BrandName>(std::stoi(serialNumber.substr(0, serialNumber.find('-')))) };
+
+	serialNumber.erase(0, serialNumber.find('-') + 1);
+	std::string grenadeSpecifics{grenadeSpecificsToText(serialNumber)};
+
+	return Grenade{ type, rarity, reagent, body, fuse, grenadeSpecifics };
 }
 
 std::string brandSpecialToString(const Firearm& firearm)
