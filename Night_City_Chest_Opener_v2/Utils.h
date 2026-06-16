@@ -329,6 +329,8 @@ public:
 
 	void failSafe();
 	friend void saveWeapon(const Firearm& weapon, std::string username);
+	friend std::string generateSerialNumber(const Firearm& firearm);
+	friend std::string brandSpecialToString(const Firearm& firearm);
 };
 
 class MeleeWeapon : public Weapon
@@ -436,6 +438,8 @@ public:
 	friend const std::ostream& operator<<(const std::ostream& out, const MeleeWeapon& melee);
 	void failSafe();
 	friend void saveWeapon(const MeleeWeapon& melee, std::string username);
+	friend std::string generateSerialNumber(const MeleeWeapon& melee);
+	friend std::string brandSpecialToString(const MeleeWeapon& melee);
 };
 
 class Grenade : public Weapon
@@ -540,6 +544,8 @@ public:
 
 	friend const std::ostream& operator<<(const std::ostream& out, const Grenade& grenade);
 	friend void saveWeapon(const Grenade& grenade, std::string username);
+	friend std::string generateSerialNumber(const Grenade& grenade);
+	friend std::string specificsToString(const Grenade& grenade);
 };
 
 void newlineSpam();

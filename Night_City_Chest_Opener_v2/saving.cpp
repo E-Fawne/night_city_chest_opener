@@ -40,6 +40,480 @@ int getID(char type, std::string username)
 	return ID;
 }
 
+int prefixToNum(std::string_view prefix)
+{
+	if (prefix.empty())
+		return 0;
+
+	else if (prefix == "Accurate: Aimed shot with advantage")
+		return 1;
+
+	else if (prefix == "Stable: Auto shot with advantage")
+		return 2;
+
+	else if (prefix == "High caliber: One advantage die on damage")
+		return 3;
+
+	else if (prefix == "Wieldy: Accuracy bonus")
+		return 4;
+
+	else if (prefix == "Fast: Fire rate bonus")
+		return 5;
+
+	else if (prefix == "Unstoppable: Shoots through cover")
+		return 6;
+
+	else if (prefix == "Penetrating: Doubles damage on armor")
+		return 7;
+
+	else if (prefix == "Accurate: Aimed hit with advantage")
+		return 8;
+
+	else if (prefix == "Stable: Throw with advantage")
+		return 9;
+
+	else if (prefix == "Sharp: One advantage die on damage")
+		return 10;
+
+	else if (prefix == "Wieldy: Handling bonus")
+		return 11;
+
+	else if (prefix == "Fast: Attack speed bonus")
+		return 12;
+
+	else if (prefix == "Handmade: Doubles the bonus on any parts that share the same brand as the weapon")
+		return 13;
+
+	else if (prefix == "Penetrating: Ignores armor")
+		return 14;
+
+	else
+		return -1;
+}
+
+std::string brandSpecialToString(const Firearm& firearm)
+{
+	std::string brandSpecial{};
+	using namespace WeaponCreationTools;
+
+	switch (firearm.m_body.getBrand())
+	{
+	case militech:			brandSpecial = "MIL"; break;
+	case arasaka:			brandSpecial = "ARA"; break;
+	case gunmart:			brandSpecial = "GMI"; break;
+	case tsunami:			brandSpecial = "TSU"; break;
+	case nova:				brandSpecial = "NOV"; break;
+	case dai_lung:			brandSpecial = "DAI"; break;
+	case constitution:		brandSpecial = "CON"; break;
+	case techtronika:		brandSpecial = "TRU"; break;
+	case sanroo:			brandSpecial = "SAN"; break;
+	case hydrosubsidium:	brandSpecial = "HSD"; break;
+	case rostovic:			brandSpecial = "ROS"; break;
+	case malorian:			brandSpecial = "MAL"; break;
+	default:				brandSpecial = "NUL"; break;
+	}
+
+	if (brandSpecial == "MAL" || brandSpecial == "HSD")
+	{
+		if (brandSpecial == "MAL")
+		{
+			// For first Malorian Special
+			if (firearm.m_brandSpecial == "Ammo Mod:\nTracer: Every consecutive hit on the same target gives you a bonus (of 1) to hit rate on them")
+				brandSpecial += "01";
+
+			else if (firearm.m_brandSpecial == "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury is reduced by 1")
+				brandSpecial += "02";
+
+			else if (firearm.m_brandSpecial == "Ammo Mod:\nSubsonic: Your shots are harder to track")
+				brandSpecial += "03";
+
+			else if (firearm.m_brandSpecial == "Ammo Mod:\nPiercing: Ignores half of armor (and cover)")
+				brandSpecial += "04";
+
+			else if (firearm.m_brandSpecial == "Ammo Mod:\nFull Metal Jacket: Standard Malorian issued round")
+				brandSpecial += "05";
+
+			else if (firearm.m_brandSpecial == "Ammo Mod:\nHigh Velocity: Multiplies the effective distances of the round by 2")
+				brandSpecial += "06";
+
+			else if (firearm.m_brandSpecial == "Ammo Mod:\nBuckshot: Acts like the standard shotgun Buckshot")
+				brandSpecial += "07";
+
+			else if (firearm.m_brandSpecial == "Ammo Mod:\nRubber: Non-lethal, same damage")
+				brandSpecial += "08";
+
+
+			// For second Malorian Special
+			if (firearm.m_malorianSpecial2 == "Ammo Mod:\nTracer: Every consecutive hit on the same target gives you a bonus (of 1) to hit rate on them")
+				brandSpecial += "-01";
+
+			else if (firearm.m_malorianSpecial2 == "Ammo Mod:\nHollow Point: The number of perfect rolls to inflict a serious injury is reduced by 1")
+				brandSpecial += "-02";
+
+			else if (firearm.m_malorianSpecial2 == "Ammo Mod:\nSubsonic: Your shots are harder to track")
+				brandSpecial += "-03";
+
+			else if (firearm.m_malorianSpecial2 == "Ammo Mod:\nPiercing: Ignores half of armor (and cover)")
+				brandSpecial += "-04";
+
+			else if (firearm.m_malorianSpecial2 == "Ammo Mod:\nFull Metal Jacket: Standard Malorian issued round")
+				brandSpecial += "-05";
+
+			else if (firearm.m_malorianSpecial2 == "Ammo Mod:\nHigh Velocity: Multiplies the effective distances of the round by 2")
+				brandSpecial += "-06";
+
+			else if (firearm.m_malorianSpecial2 == "Ammo Mod:\nBuckshot: Acts like the standard shotgun Buckshot")
+				brandSpecial += "-07";
+
+			else if (firearm.m_malorianSpecial2 == "Ammo Mod:\nRubber: Non-lethal, same damage")
+				brandSpecial += "-08";
+		}
+
+		else if (brandSpecial == "HSD")
+		{
+			// For Hydrosubsidum special
+			if (firearm.m_brandSpecial == "Chem Warfare:\nEMP: Adds an extra EMP explosion which deactivate any electrical system touched by the bullet")
+				brandSpecial += '1';
+
+			else if (firearm.m_brandSpecial == "Chem Warfare:\nAcid: Adds an extra damage on time effect to the round, equal to setting the target on fire (but doubled on metal)")
+				brandSpecial += '2';
+
+			else if (firearm.m_brandSpecial == "Chem Warfare:\nNeurotoxin: Any damage inflicted by this weapon is, instead, removed from maximum health total (Only an expensive operation can fix that)")
+				brandSpecial += '3';
+
+			else if (firearm.m_brandSpecial == "Chem Warfare:\nNapalm: Sets the target on fire")
+				brandSpecial += '4';
+
+			else if (firearm.m_brandSpecial == "Chem Warfare:\nSleeping gas: The target has to resist torture/drugs (DV defined by the quality of the weapon) in order to not fall asleep")
+				brandSpecial += '5';
+
+			else if (firearm.m_brandSpecial == "Chem Warfare:\nNanomachines: Nanomachines that can be reprogrammed to do simple tasks on electrical components")
+				brandSpecial += '6';
+
+			else if (firearm.m_brandSpecial == "Chem Warfare:\nSticky: Extremely sticky solution that disturbs movement")
+				brandSpecial += '7';
+
+			else if (firearm.m_brandSpecial == "Chem Warfare:\nNeuropsychotic: Any damage inflicted is replicated on Humanity")
+				brandSpecial += '8';
+		}
+	}
+
+	return brandSpecial;
+}
+
+std::string brandSpecialToString(const MeleeWeapon& melee)
+{
+	std::string brandSpecial{};
+	using namespace WeaponCreationTools;
+
+	switch (melee.m_material.getBrand())
+	{
+	case militech:			brandSpecial = "MIL"; break;
+	case arasaka:			brandSpecial = "ARA"; break;
+	case kendachi:			brandSpecial = "KEN"; break;
+	case everest:			brandSpecial = "EVW"; break;
+	case sanroo:			brandSpecial = "SAN"; break;
+	case slamdance:			brandSpecial = "SDI"; break;
+	default:				brandSpecial = "NUL"; break;
+	}
+
+	if (brandSpecial == "ARA")
+	{
+		if (melee.m_brandSpecial == "Iai:\nVersatile: While fighting, +2 to any throw if the weapon was unsheathed this turn")
+			brandSpecial += '1';
+
+		else if (melee.m_brandSpecial == "Iai:\nTrue Slice: The next attack after unsheathing gets an extra damage die")
+			brandSpecial += '2';
+
+		else if (melee.m_brandSpecial == "Iai:\nFast Strike: You get a free attack after unsheathing")
+			brandSpecial += '3';
+
+		else if (melee.m_brandSpecial == "Iai:\nCharge: The turn you unsheath, you can Charge, which allows you to move an extra time and attack")
+			brandSpecial += '4';
+
+		else if (melee.m_brandSpecial == "Iai:\nTranquil Strike: The next attack after unsheathing cannot miss")
+			brandSpecial += '5';
+
+		else if (melee.m_brandSpecial == "Iai:\nTerror: Unsheathing triggers a Staredown event within which you may not receive any negative effects")
+			brandSpecial += '6';
+
+		else if (melee.m_brandSpecial == "Iai:\nReaction: You may unsheath this weapon as a response to any attack and parry it (this action takes your turn)")
+			brandSpecial += '7';
+
+		else if (melee.m_brandSpecial == "Iai:\nAccurate Slice: The penalty on any aimed attack following the unsheathing is nullified")
+			brandSpecial += '8';
+	}
+
+	return brandSpecial;
+}
+
+std::string specificsToString(const Grenade& grenade)
+{
+	using namespace WeaponCreationTools;
+
+	std::string grenadeSpecifics{};
+	switch (grenade.m_reagent.getBrand())
+	{
+	case gunmart:			grenadeSpecifics = "GMI"; break;
+	case centurian:			grenadeSpecifics = "CTE"; break;
+	case great_lakes:		grenadeSpecifics = "GLC"; break;
+	case hydrosubsidium:	grenadeSpecifics = "HSD"; break;
+	case ktech:				grenadeSpecifics = "KTC"; break;
+	case militech:			grenadeSpecifics = "MIL"; break;
+	default:				grenadeSpecifics = "NUL"; break;
+	}
+
+	switch (grenade.getType())
+	{
+	case Util_G:			grenadeSpecifics += "&UG"; break;
+	case Explo_G:			grenadeSpecifics += "&EG"; break;
+	case Pers_G:			grenadeSpecifics += "&PG"; break;
+	default:				grenadeSpecifics += "&NUL"; break;
+	}
+
+	if (grenade.getType() == Util_G)
+	{
+		if (grenadeSpecifics == "GMI&UG")
+		{
+			if (grenade.m_grenadeSpecifics == "Firesmoke\nGenerates a thin smoke that irritates the throat")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Noise Machine\nGenerates a constant noise that distacts foes out of combat")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Stinky Bomb\nCreates a foul odor that can make people throw up")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "CTE&UG")
+		{
+			if (grenade.m_grenadeSpecifics == "EMP\nTemporarily disables any electronics")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Ear Disabler\nGenerates a loud high pitched noise that temporarily reduces or disables hearing")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Deflector\nCreates a magnetic field that temporarily pushes back any metallic objets, making you harder to hit")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "HSD&UG")
+		{
+			if (grenade.m_grenadeSpecifics == "Sleeping Gas\nConstantly exhales a sleeping agent that forces any foe to fall unconscious")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Slippery Solution\nExplodes into a slippery liquid that makes every action more difficult")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Sticky Bomb\nExplodes into a pool of quick hardening material that acts like cement once hardened")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "KTC&UG")
+		{
+			if (grenade.m_grenadeSpecifics == "Flashbang\nExplodes into a ball of bright light that temporarily blinds foes")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Push Field\nCreates a harsh force field that pushes anything in its path")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Electronics Resetter\nSends an electric signal forcing any electronics to fully restart")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "MIL&UG")
+		{
+			if (grenade.m_grenadeSpecifics == "Smoke\nGenerates a thick wall of smoke")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Nerve Agent\nGradually damages the humanity of anyone inside the radius")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Ping Grenade\nStealth grenade that quietly detonates and gives you a full view of its radius")
+				grenadeSpecifics += "03";
+		}
+	}
+
+	else if (grenade.getType() == Explo_G)
+	{
+		if (grenadeSpecifics == "GMI&EG")
+		{
+			if (grenade.m_grenadeSpecifics == "Pipebomb\nClassic grenade, if not low quality")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Unstable\nExplodes into light shrapnel, allowing you to ignore half of armor")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Super Sensitive Mine\nExplodes on light contact or perturbation")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "GLC&EG")
+		{
+			if (grenade.m_grenadeSpecifics == "Shrapnel\nExplodes into rasor sharp sharpnel, allowing you to ignore any and all armor")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Spike Wall\nGrows spikes in its radius")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Targetted Wounder\nHas a higher chance of causing a chosen wound")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "KTC&EG")
+		{
+			if (grenade.m_grenadeSpecifics == "Explosive Charge\nRemotely activated charge")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Thermite Bomb\nExplodes and frees thermite anyone caught in the blast, setting them on fire")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Surface Grenade\nDamages foes on a surface level, allowing the environment to be unharmed")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "MIL&EG")
+		{
+			if (grenade.m_grenadeSpecifics == "Frag Grenade\nStandard issued Militech grenade")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Claymore\nDetects any foe in a direct line and explodes in the same radius")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Heat Seeking Grenade\nThis grenades autocorrects its trajectory towards the closest heat source")
+				grenadeSpecifics += "03";
+		}
+	}
+
+	else if (grenade.getType() == Pers_G)
+	{
+		if (grenadeSpecifics == "CTE&PG")
+		{
+			if (grenade.m_grenadeSpecifics == "Pulse EMP\nPulses an EMP field each turn, disabling electronics for this turn")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Incendiary\nStandard incendiary grenade")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Pulse Ear Disabler\nLiberates a high pitched loud noise every turn, disabling hearing")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "GLC&PG")
+		{
+			if (grenade.m_grenadeSpecifics == "Spikes\nFrees spikes on the ground, damaging anyone stepping in the area")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Senbon\nSends flying projectile each turn, wounding anyone in the area")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Rasor Wire\nCreates long lines of rasor wire that attaches to anything, wounding on movement")
+				grenadeSpecifics += "03";
+		}
+
+		else if (grenadeSpecifics == "HSD&PG")
+		{
+			if (grenade.m_grenadeSpecifics == "Acid Spray\nSprays acid each turn, coating anyone with it, damage is doubled on metal")
+				grenadeSpecifics += "01";
+
+			else if (grenade.m_grenadeSpecifics == "Electric Field\nGenerates a constant electric field, damage is doubled on electronics")
+				grenadeSpecifics += "02";
+
+			else if (grenade.m_grenadeSpecifics == "Irradiated Gas\nCreates a thick radioactive smoke that quickly deteriorates any living thing")
+				grenadeSpecifics += "03";
+		}
+	}
+
+	return grenadeSpecifics;
+}
+
+std::string generateSerialNumber(const Firearm& firearm)
+{
+	std::string serialNumber{};
+
+	serialNumber += std::to_string(static_cast<int>(firearm.getType()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(firearm.getRarity()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(firearm.m_body.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(firearm.m_barrel.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(firearm.m_grip.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(firearm.m_scope.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(firearm.m_stock.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += 'P';
+	serialNumber += std::to_string(prefixToNum(firearm.getPrefix()));
+	serialNumber += '-';
+
+	serialNumber += brandSpecialToString(firearm);
+
+	return serialNumber;
+}
+
+std::string generateSerialNumber(const MeleeWeapon& melee)
+{
+	std::string serialNumber{};
+
+	serialNumber += std::to_string(static_cast<int>(melee.getType()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(melee.getRarity()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(melee.m_material.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(melee.m_grip.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(melee.m_body.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += 'P';
+	serialNumber += std::to_string(prefixToNum(melee.getPrefix()));
+	serialNumber += '-';
+
+	serialNumber += brandSpecialToString(melee);
+
+	return serialNumber;
+}
+
+std::string generateSerialNumber(const Grenade& grenade)
+{
+	std::string serialNumber{};
+
+	serialNumber += std::to_string(static_cast<int>(grenade.getType()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(grenade.getRarity()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(grenade.m_reagent.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(grenade.m_body.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += std::to_string(static_cast<int>(grenade.m_fuse.getBrand()));
+	serialNumber += '-';
+
+	serialNumber += specificsToString(grenade);
+
+	return serialNumber;
+}
+
+
 void deleteWeapon(std::string username, std::string deletionID)
 {
 	std::fstream file{ username + ".txt" };
@@ -53,7 +527,9 @@ void deleteWeapon(std::string username, std::string deletionID)
 		{
 			line.erase();
 			file.ignore(std::numeric_limits<std::streamsize>::max(), ';');
-			temp << ';';
+
+			if (file.peek() != ';')
+				temp << ';';
 		}
 
 		temp << line << std::endl;
@@ -83,7 +559,7 @@ void saveWeapon(const Firearm& firearm, std::string username)
 		return;
 	}
 
-	save << "WeaponID: #F" << firearmID << '\n';
+	save << "WeaponID: #F" << firearmID << '-' << generateSerialNumber(firearm) << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(firearm.getRarity()) << " " << getTypeText(firearm.getType()) << '\n';
@@ -120,7 +596,7 @@ void saveWeapon(const MeleeWeapon& melee, std::string username)
 		return;
 	}
 
-	save << "WeaponID: #M" << meleeID << '\n';
+	save << "WeaponID: #M" << meleeID << '-' << generateSerialNumber(melee) << '\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(melee.getRarity()) << " " << getTypeText(melee.getType()) << '\n';
@@ -156,7 +632,7 @@ void saveWeapon(const Grenade& grenade, std::string username)
 		return;
 	}
 
-	save << "WeaponID: #G" << grenadeID << '\n';
+	save << "WeaponID: #G" << grenadeID << '-' << generateSerialNumber(grenade) <<'\n';
 
 	using namespace WeaponCreationTools;
 	save << getRarityText(grenade.getRarity()) << " " << getTypeText(grenade.getType()) << '\n';
