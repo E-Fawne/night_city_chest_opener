@@ -333,6 +333,7 @@ public:
 	friend void saveWeapon(const Firearm& weapon, std::string username);
 	friend std::string generateSerialNumber(const Firearm& firearm);
 	friend std::string brandSpecialToString(const Firearm& firearm);
+	friend void modFirearm(std::string username, std::string weaponID);
 };
 
 class MeleeWeapon : public Weapon

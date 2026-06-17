@@ -1,4 +1,5 @@
 #include <fstream>
+#include <span>
 #include <string>
 #include "Utils.h"
 #include "Saving.h"
@@ -1014,14 +1015,14 @@ void saveWeapon(const Firearm& firearm, std::string username)
 {
 	std::ofstream save{ username + ".txt", std::ios::app};
 
-	static int firearmID{getID('F', username)};
-	++firearmID;
-
 	if (!save)
 	{
 		std::cerr << username << ".txt could not be opened for writing.\n";
 		return;
 	}
+
+	static int firearmID{getID('F', username)};
+	++firearmID;
 
 	save << "WeaponID: #F" << firearmID << '-' << generateSerialNumber(firearm) << '\n';
 
@@ -1045,20 +1046,21 @@ void saveWeapon(const Firearm& firearm, std::string username)
 	save << "Special: " << firearm.m_weaponSpecial << '\n' << firearm.m_brandSpecial << '\n' << firearm.m_malorianSpecial2 << "\n\n";
 
 	save << "Price: " << firearm.getPrice() << " Eurodollars" << "\n\n;";
+	save.close();
 }
 
 void saveWeapon(const MeleeWeapon& melee, std::string username)
 {
 	std::ofstream save{ username + ".txt", std::ios::app};
 
-	static int meleeID{getID('M', username)};
-	++meleeID;
-
 	if (!save)
 	{
 		std::cerr << username << ".txt could not be opened for writing.\n";
 		return;
 	}
+
+	static int meleeID{getID('M', username)};
+	++meleeID;
 
 	save << "WeaponID: #M" << meleeID << '-' << generateSerialNumber(melee) << '\n';
 
@@ -1081,20 +1083,21 @@ void saveWeapon(const MeleeWeapon& melee, std::string username)
 	save << "Special: " << melee.m_brandSpecial << "\n\n";
 
 	save << "Price: " << melee.getPrice() << " Eurodollars" << "\n\n;";
+	save.close();
 }
 
 void saveWeapon(const Grenade& grenade, std::string username)
 {
 	std::ofstream save{ username + ".txt", std::ios::app};
 
-	static int grenadeID{getID('G', username)};
-	++grenadeID;
-
 	if (!save)
 	{
 		std::cerr << username << ".txt could not be opened for writing.\n";
 		return;
 	}
+
+	static int grenadeID{getID('G', username)};
+	++grenadeID;
 
 	save << "WeaponID: #G" << grenadeID << '-' << generateSerialNumber(grenade) <<'\n';
 
@@ -1112,15 +1115,123 @@ void saveWeapon(const Grenade& grenade, std::string username)
 	save << "Special Bonus: " << grenade.getSpecialBonus() << '\n';
 
 	save << "\nPrice: " << grenade.getPrice() << " Eurodollars" << "\n\n;";
+	save.close();
+}
+
+std::span<const WeaponCreationTools::BrandName> getArrayFromType(const WeaponCreationTools::WeaponType& type)
+{
+	using namespace WeaponCreationTools;
+
+	switch (type)
+	{
+	case HG:		return std::span{ HG_Brand };
+	case H_HG:		return std::span{ H_HG_Brand };
+	case VH_HG:		return std::span{ VH_HG_Brand };
+	case SMG:		return std::span{ SMG_Brand };
+	case H_SMG:		return std::span{ H_SMG_Brand };
+	case SG:		return std::span{ SG_Brand };
+	case AR:		return std::span{ AR_Brand };
+	case SR:		return std::span{ SR_Brand };
+	case Bow:		return std::span{ Bow_Brand };
+	case GL:		return std::span{ GL_Brand };
+	case RL:		return std::span{ RL_Brand };
+
+	case Melee:		return std::span{ Melee_Brand};
+	case I_Melee:	return std::span{ I_Melee_Brand };
+	case H_Melee:	return std::span{ H_Melee_Brand };
+	case VH_Melee:	return std::span{ VH_Melee_Brand };
+
+	case Util_G:	return std::span{ Util_G_Brand };
+	case Explo_G:	return std::span{ Explo_G_Brand };
+	case Pers_G:	return std::span{ Pers_G_Brand };
+	default:		return { };
+	}
+}
+
+void modFirearm(std::string username, std::string weaponID)
+{
+	Firearm firearm{ readFirearmSerialNumber(weaponID) };
+
+	while (true)
+	{
+		newlineSpam();
+		std::cout << firearm;
+
+		std::cout << "\nWhich part would you like to swap?\n";
+		std::cout << "1. Barrel: " << getBrandText(firearm.m_barrel.getBrand()) << '\n';
+		std::cout << "2. Scope: " << getBrandText(firearm.m_scope.getBrand()) << '\n';
+		std::cout << "3. Grip: " << getBrandText(firearm.m_grip.getBrand()) << '\n';
+		std::cout << "4. Stock: " << getBrandText(firearm.m_stock.getBrand()) << '\n';
+		std::cout << "5. I'm done, thank you.\n";
+
+		int input{};
+		do
+		{
+			std::cin >> input;
+		} while (input < 1 || input > 5);
+
+		if (input == 5)
+			break;
+
+		const std::span<const WeaponCreationTools::BrandName> arr{ getArrayFromType(firearm.getType()) };
+
+		std::cout << "\nHere are your available options:\n";
+		for (int i{}; i < arr.size(); ++i)
+		{
+			std::cout << i << ". " << getBrandText(arr[i]) << "\n";
+		}
+
+		int part{};
+		std::cin >> part;
+		while (part > arr.size()-1)
+		{
+			std::cout << "Invalid. Please try again.\n";
+			std::cin >> part;
+		}
+
+		if (input == 1)
+		{
+			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), arr[part], firearm.m_scope.getBrand(), firearm.m_grip.getBrand(),
+				firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
+			continue;
+		}
+
+		else if (input == 2)
+		{
+			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), arr[part], firearm.m_grip.getBrand(),
+	firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
+		}
+
+		else if (input == 3)
+		{
+			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), firearm.m_scope.getBrand(), arr[part],
+	firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
+		}
+
+		else if (input == 4)
+		{
+			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), firearm.m_scope.getBrand(), firearm.m_grip.getBrand(),
+	arr[part], firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
+		}
+	}
+
+	saveWeapon(firearm, username);
+	std::string oldID{"WeaponID: #" + weaponID};
+	deleteWeapon(username, oldID);
 }
 
 void modifyWeapon(std::string username, std::string weaponID)
 {
-	std::ifstream save{ username + ".txt" };
+	weaponID.erase(0, weaponID.find('#') + 1);
 
-	Firearm firearm{ readFirearmSerialNumber(weaponID) };
+	if (weaponID.front() == 'F')
+		modFirearm(username, weaponID);
 
-	std::cout << firearm;
+	else if (weaponID.front() == 'M')
+		MeleeWeapon melee{ readMeleeSerialNumber(weaponID) };
+
+	else if (weaponID.front() == 'G')
+		Grenade grenade{ readGrenadeSerialNumber(weaponID) };
 }
 
 void browseSaveFile(std::string username)
@@ -1178,8 +1289,10 @@ void browseSaveFile(std::string username)
 
 				else if (browseInput == 'm')
 				{
+					save.close();
 					modifyWeapon(username, weaponID);
-					std::cin;
+					browseSaveFile(username);
+					break;
 				}
 
 				else if (browseInput == 'd')
