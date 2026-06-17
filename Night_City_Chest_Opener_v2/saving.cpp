@@ -1158,9 +1158,9 @@ void modFirearm(std::string username, std::string weaponID)
 		std::cout << firearm;
 
 		std::cout << "\nWhich part would you like to swap?\n";
-		std::cout << "1. Barrel: " << getBrandText(firearm.m_barrel.getBrand()) << '\n';
-		std::cout << "2. Scope: " << getBrandText(firearm.m_scope.getBrand()) << '\n';
-		std::cout << "3. Grip: " << getBrandText(firearm.m_grip.getBrand()) << '\n';
+		std::cout << "1. Grip: " << getBrandText(firearm.m_grip.getBrand()) << '\n';
+		std::cout << "2. Barrel: " << getBrandText(firearm.m_barrel.getBrand()) << '\n';
+		std::cout << "3. Scope: " << getBrandText(firearm.m_scope.getBrand()) << '\n';
 		std::cout << "4. Stock: " << getBrandText(firearm.m_stock.getBrand()) << '\n';
 		std::cout << "5. I'm done, thank you.\n";
 
@@ -1172,6 +1172,13 @@ void modFirearm(std::string username, std::string weaponID)
 
 		if (input == 5)
 			break;
+
+		if (input == 4 && (firearm.getType() == WeaponCreationTools::HG || firearm.getType() == WeaponCreationTools::H_HG || firearm.getType() == WeaponCreationTools::VH_HG || firearm.getType() == WeaponCreationTools::SMG))
+		{
+			std::cout << "This type of weapon is not allowed to have a stock.\n";
+			system("pause");
+			continue;
+		}
 
 		const std::span<const WeaponCreationTools::BrandName> arr{ getArrayFromType(firearm.getType()) };
 
@@ -1191,33 +1198,145 @@ void modFirearm(std::string username, std::string weaponID)
 
 		if (input == 1)
 		{
-			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), arr[part], firearm.m_scope.getBrand(), firearm.m_grip.getBrand(),
+			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), firearm.m_scope.getBrand(), arr[part],
 				firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
-			continue;
 		}
 
 		else if (input == 2)
 		{
-			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), arr[part], firearm.m_grip.getBrand(),
-	firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
+			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), arr[part], firearm.m_scope.getBrand(), firearm.m_grip.getBrand(),
+				firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
 		}
 
 		else if (input == 3)
 		{
-			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), firearm.m_scope.getBrand(), arr[part],
-	firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
+			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), arr[part], firearm.m_grip.getBrand(),
+				firearm.m_stock.getBrand(), firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
 		}
 
 		else if (input == 4)
 		{
 			firearm = { firearm.getType(), firearm.getRarity(), firearm.m_body.getBrand(), firearm.m_barrel.getBrand(), firearm.m_scope.getBrand(), firearm.m_grip.getBrand(),
-	arr[part], firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
+				arr[part], firearm.getPrefix(), firearm.m_brandSpecial, firearm.m_malorianSpecial2 };
 		}
 	}
 
 	saveWeapon(firearm, username);
 	std::string oldID{"WeaponID: #" + weaponID};
 	deleteWeapon(username, oldID);
+	std::cout << "Save override completed, returning to menu.\n";
+}
+
+void modMelee(std::string username, std::string weaponID)
+{
+	MeleeWeapon melee{ readMeleeSerialNumber(weaponID) };
+
+	while (true)
+	{
+		newlineSpam();
+		std::cout << melee;
+
+		std::cout << "\nWhich part would you like to swap?\n";
+		std::cout << "1. Grip: " << getBrandText(melee.m_grip.getBrand()) << '\n';
+		std::cout << "2. Body: " << getBrandText(melee.m_body.getBrand()) << '\n';
+		std::cout << "3. I'm done, thank you.\n";
+
+		int input{};
+		do
+		{
+			std::cin >> input;
+		} while (input < 1 || input > 3);
+
+		if (input == 3)
+			break;
+
+		const std::span<const WeaponCreationTools::BrandName> arr{ getArrayFromType(melee.getType()) };
+
+		std::cout << "\nHere are your available options:\n";
+		for (int i{}; i < arr.size(); ++i)
+		{
+			std::cout << i << ". " << getBrandText(arr[i]) << "\n";
+		}
+
+		int part{};
+		std::cin >> part;
+		while (part > arr.size() - 1)
+		{
+			std::cout << "Invalid. Please try again.\n";
+			std::cin >> part;
+		}
+
+		if (input == 1)
+		{
+			melee = { melee.getType(), melee.getRarity(), melee.m_material.getBrand(), melee.m_body.getBrand(), arr[part], melee.m_brandSpecial, melee.getPrefix() };
+		}
+
+		else if (input == 2)
+		{
+			melee = { melee.getType(), melee.getRarity(), melee.m_material.getBrand(), arr[part], melee.m_grip.getBrand(), melee.m_brandSpecial, melee.getPrefix() };
+		}
+	}
+
+	saveWeapon(melee, username);
+	std::string oldID{ "WeaponID: #" + weaponID };
+	deleteWeapon(username, oldID);
+	std::cout << "Save override completed, returning to menu.\n";
+}
+
+void modGrenade(std::string username, std::string weaponID)
+{
+	Grenade grenade{ readGrenadeSerialNumber(weaponID) };
+
+	while (true)
+	{
+		newlineSpam();
+		std::cout << grenade;
+
+		std::cout << "\nWhich part would you like to swap?\n";
+		std::cout << "1. Fuse: " << getBrandText(grenade.m_fuse.getBrand()) << '\n';
+		std::cout << "2. Body: " << getBrandText(grenade.m_body.getBrand()) << '\n';
+		std::cout << "3. I'm done, thank you.\n";
+
+		int input{};
+		do
+		{
+			std::cin >> input;
+		} while (input < 1 || input > 3);
+
+		if (input == 3)
+			break;
+
+		const std::span<const WeaponCreationTools::BrandName> arr{ getArrayFromType(grenade.getType()) };
+
+		std::cout << "\nHere are your available options:\n";
+		for (int i{}; i < arr.size(); ++i)
+		{
+			std::cout << i << ". " << getBrandText(arr[i]) << "\n";
+		}
+
+		int part{};
+		std::cin >> part;
+		while (part > arr.size() - 1)
+		{
+			std::cout << "Invalid. Please try again.\n";
+			std::cin >> part;
+		}
+
+		if (input == 1)
+		{
+			grenade = { grenade.getType(), grenade.getRarity(), grenade.m_reagent.getBrand(), grenade.m_body.getBrand(), arr[part], grenade.m_grenadeSpecifics };
+		}
+
+		else if (input == 2)
+		{
+			grenade = { grenade.getType(), grenade.getRarity(), grenade.m_reagent.getBrand(), arr[part], grenade.m_fuse.getBrand(), grenade.m_grenadeSpecifics };
+		}
+	}
+
+	saveWeapon(grenade, username);
+	std::string oldID{ "WeaponID: #" + weaponID };
+	deleteWeapon(username, oldID);
+	std::cout << "Save override completed, returning to menu.\n";
 }
 
 void modifyWeapon(std::string username, std::string weaponID)
@@ -1228,10 +1347,10 @@ void modifyWeapon(std::string username, std::string weaponID)
 		modFirearm(username, weaponID);
 
 	else if (weaponID.front() == 'M')
-		MeleeWeapon melee{ readMeleeSerialNumber(weaponID) };
+		modMelee(username, weaponID);
 
 	else if (weaponID.front() == 'G')
-		Grenade grenade{ readGrenadeSerialNumber(weaponID) };
+		modGrenade(username, weaponID);
 }
 
 void browseSaveFile(std::string username)
@@ -1280,7 +1399,7 @@ void browseSaveFile(std::string username)
 
 				weaponID = "WeaponID: #" + weaponID;
 
-				std::cout << "next ->(n) / modify (m) / delete (d) / quit x(q)\n";
+				std::cout << "next ->(n) / modify (m) / delete (d) / quit x (q)\n";
 				char browseInput{};
 				std::cin >> browseInput;
 
@@ -1322,12 +1441,20 @@ void browseSaveFile(std::string username)
 
 				weaponID = "WeaponID: #" + weaponID;
 
-				std::cout << "next ->(n) / quit x(q) / delete(d)\n";
+				std::cout << "next ->(n) / modify (m) / delete (d) / quit x (q)\n";
 				char browseInput{};
 				std::cin >> browseInput;
 
 				if (browseInput == 'n')
 					continue;
+
+				else if (browseInput == 'm')
+				{
+					save.close();
+					modifyWeapon(username, weaponID);
+					browseSaveFile(username);
+					break;
+				}
 
 				else if (browseInput == 'd')
 				{
@@ -1356,12 +1483,20 @@ void browseSaveFile(std::string username)
 
 				weaponID = "WeaponID: #" + weaponID;
 
-				std::cout << "next ->(n) / quit x(q) / delete(d)\n";
+				std::cout << "next ->(n) / modify (m) / delete (d) / quit x (q)\n";
 				char browseInput{};
 				std::cin >> browseInput;
 
 				if (browseInput == 'n')
 					continue;
+
+				else if (browseInput == 'm')
+				{
+					save.close();
+					modifyWeapon(username, weaponID);
+					browseSaveFile(username);
+					break;
+				}
 
 				else if (browseInput == 'd')
 				{

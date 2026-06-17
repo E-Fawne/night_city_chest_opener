@@ -443,6 +443,7 @@ public:
 	friend void saveWeapon(const MeleeWeapon& melee, std::string username);
 	friend std::string generateSerialNumber(const MeleeWeapon& melee);
 	friend std::string brandSpecialToString(const MeleeWeapon& melee);
+	friend void modMelee(std::string username, std::string weaponID);
 };
 
 class Grenade : public Weapon
@@ -549,6 +550,7 @@ public:
 	friend void saveWeapon(const Grenade& grenade, std::string username);
 	friend std::string generateSerialNumber(const Grenade& grenade);
 	friend std::string specificsToString(const Grenade& grenade);
+	friend void modGrenade(std::string username, std::string weaponID);
 };
 
 void newlineSpam();
