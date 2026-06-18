@@ -981,7 +981,7 @@ std::string generateSerialNumber(const Grenade& grenade)
 
 void deleteWeapon(std::string username, std::string deletionID)
 {
-	std::fstream file{ username + ".txt" };
+	std::ifstream file{ username + ".txt" };
 	std::ofstream temp{ "temp.txt" };
 
 	std::string line{};
@@ -997,7 +997,7 @@ void deleteWeapon(std::string username, std::string deletionID)
 				temp << ';';
 		}
 
-		temp << line << std::endl;
+		temp << line << '\n';
 	}
 
 	temp.close();
