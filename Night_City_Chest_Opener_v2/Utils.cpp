@@ -1129,6 +1129,12 @@ void Firearm::tweakStats()
 			continue;
 		}
 	}
+
+	if (getPrefix() == "Wieldy: Accuracy bonus")
+		addAccuracyBonus();
+
+	if (getPrefix() == "Fast: Fire rate bonus")
+		addFireRateBonus();
 }
 
 void MeleeWeapon::tweakStats()
@@ -1174,7 +1180,54 @@ void MeleeWeapon::tweakStats()
 		{
 			continue;
 		}
+
+		if (getPrefix() == "Handmade: Doubles the bonus on any parts that share the same brand as the weapon" && parts[i].getBrand() == m_material.getBrand())
+		{
+			if (parts[i].getBrand() == WeaponCreationTools::militech)
+			{
+				addHandlingBonus();
+			}
+			else if (parts[i].getBrand() == WeaponCreationTools::arasaka)
+			{
+				addDamageBonus();
+				addHandlingBonus();
+				addAttackSpeedMalus();
+			}
+			else if (parts[i].getBrand() == WeaponCreationTools::kendachi)
+			{
+				addDamageBonus();
+				addHandlingMalus();
+				addAttackSpeedBonus();
+			}
+			else if (parts[i].getBrand() == WeaponCreationTools::everest)
+			{
+				addDamageMalus();
+				addHandlingBonus();
+				addAttackSpeedBonus();
+			}
+			else if (parts[i].getBrand() == WeaponCreationTools::sanroo)
+			{
+				addPriceBonus();
+				addConcealMalus();
+			}
+			else if (parts[i].getBrand() == WeaponCreationTools::slamdance)
+			{
+				addHandlingBonus();
+				addAttackSpeedBonus();
+				addConcealMalus();
+			}
+			else
+			{
+				continue;
+			}
+		}
 	}
+
+	if (getPrefix() == "Wieldy: Handling bonus")
+		addHandlingBonus();
+
+	if (getPrefix() == "Fast: Attack speed bonus")
+		addAttackSpeedBonus();
 }
 
 void Grenade::tweakStats()
